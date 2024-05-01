@@ -1,7 +1,9 @@
 
 public abstract class Conta implements IConta {
-	
+
 	private static final int AGENCIA_PADRAO = 1;
+	private static final int SAQUE_FEITO = 1;
+	private static final int SAQUE_N_FEITO_SEM_SALDO = 2;
 	private static int SEQUENCIAL = 1;
 
 	protected int agencia;
@@ -16,19 +18,36 @@ public abstract class Conta implements IConta {
 	}
 
 	@Override
-	public void sacar(double valor) {
-		saldo -= valor;
+	public int sacar(double valor, boolean porTransferencia) {
+		if (saldo < valor || saldo == 0) {
+			System.out.println("Saldo insuficiente! Saldo disponivel: " + this.saldo);
+			return SAQUE_N_FEITO_SEM_SALDO;
+		} else {
+			saldo -= valor;
+			if (!porTransferencia) {
+
+				System.out.println("Saque realizado com sucesso! Saldo disponivel: " + this.saldo);
+
+			}
+			return SAQUE_FEITO;
+		}
 	}
 
 	@Override
-	public void depositar(double valor) {
+	public void depositar(double valor, boolean porTransferencia) {
 		saldo += valor;
+		if (!porTransferencia) {
+			System.out.println("deposito realizado com sucesso! Saldo disponivel: " + this.saldo);
+
+		}
 	}
 
 	@Override
 	public void transferir(double valor, IConta contaDestino) {
-		this.sacar(valor);
-		contaDestino.depositar(valor);
+		if (this.sacar(valor, true) == SAQUE_FEITO) {
+			contaDestino.depositar(valor, true);
+			System.out.println("transferência realizada com sucesso! Saldo disponivel: " + this.saldo);
+		}
 	}
 
 	public int getAgencia() {

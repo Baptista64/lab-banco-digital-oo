@@ -1,9 +1,9 @@
 
 public interface IConta {
 	
-	void sacar(double valor);
+	int sacar(double valor, boolean porTransferencia);
 	
-	void depositar(double valor);
+	void depositar(double valor, boolean porTransferencia);
 	
 	void transferir(double valor, IConta contaDestino);
 	
